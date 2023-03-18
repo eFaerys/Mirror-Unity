@@ -10,8 +10,10 @@ public class PlayerBehaviour : MonoBehaviour
     private Vector2 _movementInput;
     public float MoveSpeed = 2;
     [SerializeField] private TMP_Text pseudo = null;
+    [SerializeField] private Rigidbody2D rigidbody2D = null;
 
-    public Animator _animator;
+
+    public Animator animator;
     // Start is called before the first frame update
 
     private Camera _camera;
@@ -36,12 +38,13 @@ public class PlayerBehaviour : MonoBehaviour
             Input.GetAxis("Horizontal"),
             Input.GetAxis("Vertical")
         );
-        _animator.SetBool("RunAnim", !Mathf.Approximately(_movementInput.magnitude, 1));
+        animator.SetBool("RunAnim", !Mathf.Approximately(_movementInput.magnitude, 0));
     }
 
     
     private void FixedUpdate()
     {
+        rigidbody2D.velocity = MoveSpeed * _movementInput;
         //if (!isLocalPlayer) return;
     }
 
