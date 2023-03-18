@@ -12,8 +12,7 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField] private TMP_Text pseudo = null;
     [SerializeField] private Rigidbody2D rigidbody2D = null;
 
-
-    public Animator animator;
+    [SerializeField] private Animator animator;
     // Start is called before the first frame update
 
     private Camera _camera;
@@ -38,7 +37,16 @@ public class PlayerBehaviour : MonoBehaviour
             Input.GetAxis("Horizontal"),
             Input.GetAxis("Vertical")
         );
-        animator.SetBool("RunAnim", !Mathf.Approximately(_movementInput.magnitude, 0));
+        // TODO: Trouver pouruquoi ce truc de merde marche pas 
+        // animator.SetBool("IsWalking", !Mathf.Approximately(_movementInput.magnitude, 0));
+
+       if (_movementInput.x > 0)
+       {
+           transform.localScale = Vector3.one;
+       } else if (_movementInput.x < 0)
+       {
+           transform.localScale = new Vector3(-1, 1, 1);
+       }
     }
 
     
@@ -51,6 +59,6 @@ public class PlayerBehaviour : MonoBehaviour
     private void LateUpdate()
     {
         //if (!isLocalPlayer || !_camera) return;
-        _camera.transform.position = transform.position + 10 * Vector3.back;
+       _camera.transform.position = transform.position + 10 * Vector3.back;
     }
 }
