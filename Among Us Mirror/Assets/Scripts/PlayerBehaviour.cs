@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class PlayerBehaviour : MonoBehaviour
+public class PlayerBehaviour : NetworkBehaviour
 {
     private Vector2 _movementInput;
     public float MoveSpeed = 2;
@@ -38,7 +38,8 @@ public class PlayerBehaviour : MonoBehaviour
             Input.GetAxis("Vertical")
         );
         // TODO: Trouver pouruquoi ce truc de merde marche pas 
-        // animator.SetBool("IsWalking", !Mathf.Approximately(_movementInput.magnitude, 0));
+//        Debug.Log(animator.parameters.GetEnumerator());
+//        animator.SetBool("IsWalking", !Mathf.Approximately(_movementInput.magnitude, 0));
 
        if (_movementInput.x > 0)
        {
