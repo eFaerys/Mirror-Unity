@@ -61,6 +61,8 @@
      <Compile Include="Assets/Network/Assets/Scripts/AntiBomb.cs" />
      <Compile Include="Assets/Network/Assets/Scripts/OnlineEngine/Facade/BackendService/Friends/Steam/HttpRequest_GetFriends.cs" />
      <Compile Include="Assets/Network/Assets/Scripts/MyBomb.cs" />
+     <Compile Include="Assets/Scripts/LobbyManager.cs" />
+     <Compile Include="Assets/Scripts/ButtonController.cs" />
      <Folder Include="Assets" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@2.0.0/Lib/Editor/PlasticSCM/localization/mergetool.ja.txt" />
      <Folder Include="Assets/Scenes" />
@@ -268,6 +270,7 @@
      <Folder Include="Library/PackageCache/com.unity.render-pipelines.universal@12.1.10/Textures" />
      <Folder Include="Library/PackageCache/com.unity.mathematics@1.2.6" />
      <Folder Include="Library/PackageCache/com.unity.2d.psdimporter@6.0.7" />
+     <Folder Include="Assets/_Scene" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@2.0.0/Lib/Editor/PlasticSCM/FileSystemWatcherLicense.txt" />
      <None Include="Library/PackageCache/com.unity.2d.path@5.0.2/package.json" />
      <Folder Include="Library/PackageCache/com.unity.modules.androidjni@1.0.0" />
