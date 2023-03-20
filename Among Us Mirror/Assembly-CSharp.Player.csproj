@@ -63,6 +63,7 @@
      <Compile Include="Assets/Network/Assets/Scripts/MyBomb.cs" />
      <Compile Include="Assets/Scripts/LobbyManager.cs" />
      <Compile Include="Assets/Scripts/ButtonController.cs" />
+     <Compile Include="Assets/Scripts/CollisionController.cs" />
      <Reference Include="UnityEngine">
      <HintPath>/Applications/Unity/Hub/Editor/2021.3.19f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/Variations/mono/Managed/UnityEngine.dll</HintPath>
      </Reference>

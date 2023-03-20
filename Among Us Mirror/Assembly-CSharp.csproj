@@ -63,6 +63,7 @@
      <Compile Include="Assets/Network/Assets/Scripts/MyBomb.cs" />
      <Compile Include="Assets/Scripts/LobbyManager.cs" />
      <Compile Include="Assets/Scripts/ButtonController.cs" />
+     <Compile Include="Assets/Scripts/CollisionController.cs" />
      <Folder Include="Assets" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@2.0.0/Lib/Editor/PlasticSCM/localization/mergetool.ja.txt" />
      <Folder Include="Assets/Scenes" />
