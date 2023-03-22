@@ -4,53 +4,27 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+    using UnityEngine.AI;
 
-public class PlayerBehaviour : NetworkBehaviour
+    [RequireComponent(typeof(NavMeshAgent))]
+    public class PlayerBehaviour : NetworkBehaviour
 {
     private Vector2 _movementInput;
     public float MoveSpeed = 2;
     [SerializeField] private TMP_Text pseudo = null;
     [SerializeField] private Rigidbody2D rigidbody2D = null;
-
     [SerializeField] private Animator animator;
-    // Start is called before the first frame update
-
+    [SyncVar(hook = nameof(HandlePseudoChanged))]
+    string speudo = "Player";
     private Camera _camera;
     void Start()
     {
-        //if (isLocalPlayer)
+        if (isOwned)
         {
             _camera = Camera.main;
         }   
     }
-    
-    private void HandlePseudoChanged(string oldPseudo, string newPseudo)
-    {
-        pseudo.text = newPseudo;
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        //if (!isLocalPlayer) return;
-        _movementInput = new Vector2(
-            Input.GetAxis("Horizontal"),
-            Input.GetAxis("Vertical")
-        );
-        // TODO: Trouver pouruquoi ce truc de merde marche pas 
-//        Debug.Log(animator.parameters.GetEnumerator());
-//        animator.SetBool("IsWalking", !Mathf.Approximately(_movementInput.magnitude, 0));
-
-       if (_movementInput.x > 0)
-       {
-           transform.localScale = Vector3.one;
-       } else if (_movementInput.x < 0)
-       {
-           transform.localScale = new Vector3(-1, 1, 1);
-       }
-    }
-
-    
     private void FixedUpdate()
     {
         rigidbody2D.velocity = MoveSpeed * _movementInput;
@@ -59,7 +33,51 @@ public class PlayerBehaviour : NetworkBehaviour
 
     private void LateUpdate()
     {
-        //if (!isLocalPlayer || !_camera) return;
+        if (!isOwned || !_camera) return;
        _camera.transform.position = transform.position + 10 * Vector3.back;
     }
+    
+    #region Server
+
+    [Command]
+    private void CmdToMove()
+    {
+        _movementInput = new Vector2(
+            Input.GetAxis("Horizontal"),
+            Input.GetAxis("Vertical")
+
+        );
+        if (_movementInput.x > 0)
+        {
+            transform.localScale = Vector3.one;
+        } else if (_movementInput.x < 0)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+    }
+    
+    [Server]
+    public void SetPseudo(string newPseudo)
+    {
+        this.speudo = newPseudo;
+    }
+    
+    #endregion
+
+    #region Client
+    [Client]
+    
+    private void HandlePseudoChanged(string oldPseudo, string newPseudo)
+    {
+        pseudo.text = newPseudo;
+    }
+
+    private void Update()
+    {
+        if (!isOwned) return;
+        CmdToMove();
+    }
+    
+    #endregion
+
 }

@@ -1,4 +1,5 @@
 using Mirror;
+using UnityEngine;
 
 public class MyNetworkManager : NetworkManager
 {
@@ -7,8 +8,8 @@ public class MyNetworkManager : NetworkManager
         base.OnServerAddPlayer(conn);
         if (conn.identity.TryGetComponent<PlayerBehaviour>(out var player))
         {
-            var playerPseudo = $"Player{NetworkServer.connections.Count}";
-            // player.SetPseudo(playerPseudo);
+            string playerPseudo = $"Player{NetworkServer.connections.Count}";
+            player.SetPseudo(playerPseudo);
         }
     }
 }
