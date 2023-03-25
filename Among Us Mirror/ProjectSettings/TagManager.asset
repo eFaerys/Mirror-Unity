@@ -4,13 +4,13 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Btn
-  - Wall
+  - Map
+  - Interactable
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Ohterside
   - Water
   - UI
   - 

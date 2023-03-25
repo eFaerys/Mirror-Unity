@@ -4,80 +4,107 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-    using UnityEngine.AI;
+    using UnityEngine.InputSystem;
 
-    [RequireComponent(typeof(NavMeshAgent))]
-    public class PlayerBehaviour : NetworkBehaviour
+public class PlayerBehaviour : NetworkBehaviour
 {
     private Vector2 _movementInput;
-    public float MoveSpeed = 2;
+    public float MoveSpeed = 4;
     [SerializeField] private TMP_Text pseudo = null;
-    [SerializeField] private Rigidbody2D rigidbody2D = null;
-    [SerializeField] private Animator animator;
-    [SyncVar(hook = nameof(HandlePseudoChanged))]
-    string speudo = "Player";
+    Rigidbody myRB;
+    Animator myAnim;
+    Vector2 mousePositionInput;
+    [SerializeField] InputAction MOUSE;
+    [SerializeField] InputAction INTERACTION;
+    [SerializeField] LayerMask interactLayer;
+
+    // Start is called before the first frame update
+
     private Camera _camera;
+
+    private void Awake()
+    {
+        INTERACTION.performed += Interact;
+    }
+
+    private void OnEnable()
+    {
+        INTERACTION.Enable();
+    }
+
+    private void OnDisable()
+    {
+        INTERACTION.Disable();
+    }
+
     void Start()
     {
-        if (isOwned)
+        //if (isLocalPlayer)
+        myAnim = GetComponent<Animator>();
+        myRB = GetComponent<Rigidbody>();
         {
             _camera = Camera.main;
         }   
     }
-
-    private void FixedUpdate()
-    {
-        rigidbody2D.velocity = MoveSpeed * _movementInput;
-        //if (!isLocalPlayer) return;
-    }
-
-    private void LateUpdate()
-    {
-        if (!isOwned || !_camera) return;
-       _camera.transform.position = transform.position + 10 * Vector3.back;
-    }
-    
-    #region Server
-
-    [Command]
-    private void CmdToMove()
-    {
-        _movementInput = new Vector2(
-            Input.GetAxis("Horizontal"),
-            Input.GetAxis("Vertical")
-
-        );
-        if (_movementInput.x > 0)
-        {
-            transform.localScale = Vector3.one;
-        } else if (_movementInput.x < 0)
-        {
-            transform.localScale = new Vector3(-1, 1, 1);
-        }
-    }
-    
-    [Server]
-    public void SetPseudo(string newPseudo)
-    {
-        this.speudo = newPseudo;
-    }
-    
-    #endregion
-
-    #region Client
-    [Client]
     
     private void HandlePseudoChanged(string oldPseudo, string newPseudo)
     {
         pseudo.text = newPseudo;
     }
 
-    private void Update()
+    // Update is called once per frame
+    void Update()
     {
-        if (!isOwned) return;
-        CmdToMove();
-    }
-    
-    #endregion
+        mousePositionInput = MOUSE.ReadValue<Vector2>();
+        //if (!isLocalPlayer) return;
+        _movementInput = new Vector2(
+            Input.GetAxis("Horizontal"),
+            Input.GetAxis("Vertical")
+        );
+        myAnim.SetFloat("Speed", _movementInput.magnitude);
+        // TODO: Trouver pouruquoi ce truc de merde marche pas 
+//        Debug.Log(animator.parameters.GetEnumerator());
+//        animator.SetBool("IsWalking", !Mathf.Approximately(_movementInput.magnitude, 0));
 
+       if (_movementInput.x > 0)
+       {
+           transform.localScale = Vector3.one;
+       } else if (_movementInput.x < 0)
+       {
+           transform.localScale = new Vector3(-1, 1, 1);
+       }
+    }
+
+    
+    private void FixedUpdate()
+    {
+        if (!isLocalPlayer) return;
+        myRB.velocity = MoveSpeed * _movementInput;
+    }
+
+    private void LateUpdate()
+    {
+        if (!isLocalPlayer || !_camera) return;
+       _camera.transform.position = transform.position + 10 * Vector3.back;
+    }
+
+    void Interact(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            Debug.Log("Here");
+            RaycastHit hit;
+            Ray ray = _camera.ScreenPointToRay(mousePositionInput);
+            if (Physics.Raycast(ray, out hit, interactLayer))
+            {
+                if (hit.transform.tag == "Interactable")
+                {
+                    if (!hit.transform.GetChild(0).gameObject.activeInHierarchy)
+                        return;
+                    AU_Interactable temp = hit.transform.GetComponent<AU_Interactable>();
+                    Debug.Log("Minigame Launched");
+                }
+            }
+        }
+    }
 }
